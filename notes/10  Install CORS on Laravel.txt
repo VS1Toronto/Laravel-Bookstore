@@ -1,0 +1,112 @@
+To install cors on Laravel go to the url :
+
+
+STEP 1
+------
+
+
+https://github.com/barryvdh/laravel-cors
+
+
+STEP 2
+------
+
+
+Find the line :
+
+	composer require barryvdh/laravel-cors
+
+
+Open Windows Studio Code
+
+Open Gitbash Terminal     ctrl @
+
+
+input :
+
+
+     composer require barryvdh/laravel-cors   
+
+
+and press enter.
+
+
+STEP 3
+------
+
+
+Inside Input provider :
+
+
+Find the line :
+
+	Barryvdh\Cors\ServiceProvider::class,
+
+
+Next within the Laravel application open location :
+
+config\app.php
+
+
+Then input the line :    
+
+
+	Barryvdh\Cors\ServiceProvider::class,   
+
+
+to the bottom of the providers array
+
+in the     Application Service Providers     section
+
+Then save it.
+
+
+STEP 4
+------
+
+
+Input code into middleware :
+
+
+Find the line :
+
+
+      \Barryvdh\Cors\HandleCors::class,
+	  
+	  
+Next within the Laravel application open location :
+
+app/http/kernel.php
+
+
+Then input the line
+
+
+      \Barryvdh\Cors\HandleCors::class,
+
+				to the bottom of the     protected $middleware array
+
+
+It should look like this :
+
+
+class Kernel extends HttpKernel
+{
+    /**
+     * The application's global HTTP middleware stack.
+     *
+     * These middleware are run during every request to your application.
+     *
+     * @var array
+     */
+    protected $middleware = [
+        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\TrustProxies::class,
+        \Barryvdh\Cors\HandleCors::class,
+    ];
+
+
+Then save it.

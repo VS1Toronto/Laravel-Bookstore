@@ -1,0 +1,77 @@
+Laravel 5.4: Specified key was too long error 
+
+To see what this error is and find out anout it go to this url :
+
+https://laravel-news.com/laravel-5-4-key-too-long-error
+
+
+
+To fix the error you have to edit your     AppServiceProvider.php file :
+
+its located at     app\Providers\AppServiceProvider.php
+
+
+Within this file you will find this boot method which is empty :
+
+
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+	
+	
+	
+change it to :
+
+
+
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Schema::defaultStringLength(191);
+    }
+
+	
+	
+	
+	
+	
+This use statement is necessary to use the schema :
+
+use Illuminate\Support\Facades\Schema;
+
+
+This use statement is necessary to alter the schema :
+
+Schema::defaultStringLength(191);
+
+
+
+Once both lines are in and it looks like the code above save it
+and everything should run fine

@@ -1,0 +1,186 @@
+To create a new form service provider :
+
+
+STEP 1
+------
+
+
+//	To make a new provider - in this case FormServiceProvider which is made in the app/providers folder
+//
+$ php artisan make:provider FormServiceProvider
+
+
+STEP 2
+------
+
+
+Next you must add to the providers array at     config/app     this line     App\Providers\FormServiceProvider::class,	    in the     Application Service Providers     section
+
+
+
+STEP 3
+------
+
+
+Open the created     FormServiceProvider     at location     app\providers\FormServiceProvider
+
+To use the newly created service provider we must within the namespace     App\Providers     add :
+
+
+use Form;
+
+
+It should look like :
+
+
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Form;
+
+class FormServiceProvider extends ServiceProvider
+
+
+
+STEP 4
+------
+
+
+To register the Form components paste them into the boot() function the code is shown below :
+
+
+class FormServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        // This is lifted directly from Laravel Collective at url https://laravelcollective.com/docs/master/html
+        //
+        // Lifted from section     Custom Components - Providing Default Values
+        //
+        Form::component('bsText', 'components.form.text', ['name', 'value' => null, 'attributes' => []]);
+        Form::component('bsTextArea', 'components.form.textarea', ['name', 'value' => null, 'attributes' => []]);
+        Form::component('bsSubmit', 'components.form.submit', ['value' => 'Submit', 'attributes' => []]);
+        Form::component('hidden', 'components.form.hidden', ['name', 'value' => null, 'attributes' => []]);
+    }
+
+
+
+STEP 5
+------
+
+
+Inside the     resources/views folder     create a folder directory called :
+
+
+components
+
+
+Next inside the     views/components     folder create a folder directory called :
+
+
+form
+
+
+Next inside the     views/components/form     folder create a blade view for each of the components in STEP 4 :
+
+
+text.blade.php
+textarea.blade.php
+submit.blade.php
+hidden.blade.php
+
+
+STEP 6
+------
+
+
+Inside     text.blade.php     type this code :
+
+
+<!-- This is lifted directly from Laravel Collective at url https://laravelcollective.com/docs/master/html -->
+<!-- -->
+<!-- Lifted from section     Calling A Custom Form Component - Registering A Custom Component -->
+<!-- -->
+<div class="form-group">
+    {{ Form::label($name, null, ['class' => 'control-label']) }}
+    {{ Form::text($name, $value, array_merge(['class' => 'form-control'], $attributes)) }}
+</div>
+
+
+
+
+Inside     textarea.blade.php     type this code :
+
+
+<!-- This is lifted directly from Laravel Collective at url https://laravelcollective.com/docs/master/html -->
+<!-- -->
+<!-- Lifted from section     Calling A Custom Form Component - Registering A Custom Component -->
+<!-- -->
+<!-- Form::text     has been changed to     Form::textarea -->
+<!-- -->
+<div class="form-group">
+    {{ Form::label($name, null, ['class' => 'control-label']) }}
+    {{ Form::textarea($name, $value, array_merge(['class' => 'form-control'], $attributes)) }}
+</div>
+
+
+
+
+Inside     submit.blade.php     type this code :
+
+
+<!-- This is lifted directly from Laravel Collective at url https://laravelcollective.com/docs/master/html -->
+<!-- -->
+<!-- Lifted from section     Buttons -->
+<!-- -->
+<!-- echo Form::submit('Click Me!');    has been changed to     Form::submit($value, $attributes) -->
+<!-- -->
+<div>
+	{{Form::submit($value, $attributes)}}
+</div>
+
+
+
+
+Inside     hidden.blade.php     type this code :
+
+
+{{Form::hidden($name, $value $attributes)}}
+
+
+
+
+STEP 7
+------
+
+
+Next here is an example in     resources/views/listings/create.blade.php     of what 
+
+to put in a form to utilise the new Form functionality provided by the previous steps :
+
+
+
+<div class="panel-body">
+	{!!Form::open(['action' => 'ListingsController@store', 'method' => 'POST'])!!}
+		{{Form::bsText('name','',['placeholder' => 'Company Name'])}}
+		{{Form::bsText('website','',['placeholder' => 'Company Website'])}}
+		{{Form::bsText('email','',['placeholder' => 'Company Email'])}}
+		{{Form::bsText('phone','',['placeholder' => 'Company Phone'])}}
+		{{Form::bsText('address','',['placeholder' => 'Company Address'])}}
+		{{Form::bsTextArea('bio','',['placeholder' => 'About This Business'])}}
+		{{Form::bsSubmit('submit')}}
+	{!! Form::close() !!}
+</div>
+
+
+
+Bootstrap has updated so this class also works but changes the scale slightly :
+
+<div class="card-body">

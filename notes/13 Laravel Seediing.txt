@@ -1,0 +1,209 @@
+Laravel Migration With Database Seeding
+
+LAST UPDATED JUN 15, 2018
+
+
+In this tutorial, we will learn how to use laravel migrations and seeders for them. Laravel provides great functionality to create migrations which are the schema for the database. Laravel also provides the functionality to create fake data through fzaninotto/faker library. Laravel also provides seeder which is very helpful for creating dummy data. This dummy data is very useful for testing purposes.
+
+In this tutorial, we will create migrations for a forum.
+
+Table of Contents	
+Creating an application
+Setting up migrations
+Migrating the database
+Creating Database Seeders
+Creating an application
+Let’s start by creating a new laravel application. Run the following command to create a new laravel application with laravel installer.
+
+laravel new Forum
+Now, go to the .env file and configure your database credentials.
+
+Setting up migrations
+A forum contains a thread. So, let’s create a migration for threads table by running the following command.
+
+php artisan make:migration create_threads_table --create=threads
+Open the threads table migration file present in the database/migrations directory. Replace the contents of the file with the contents present below.
+
+
+
+<?php
+ 
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+ 
+class CreateThreadsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('threads', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('channel_id');
+            $table->string('title');
+            $table->text('body');
+            $table->timestamps();
+        });
+    }
+ 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('threads');
+    }
+}
+Migrations for the users table already exists. Now, let’s create a migration for the channels table. Every forum has some channels. Create migration for the channels table by running the following command.
+
+php artisan make:migration create_channels_table --create=channels
+Open channels table migration file present in the database/migrations directory. Replace the contents of the file with the contents present below.
+
+
+<?php
+ 
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+ 
+class CreateChannelsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('channels', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name', 50);
+            $table->string('slug', 50);
+            $table->timestamps();
+        });
+    }
+ 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('channels');
+    }
+}
+You can create some more migrations like a migration for the notifications, thread subscription, replies, favorites and activities table. But for the sake of this tutorial, we will only work on the migrations created above to make information compact and useful.
+
+Migrating the database
+Now that we have created migrations, let’s migrate them to the database. Run the following command to migrate the database.
+
+php artisan migrate
+Creating Database Seeders
+Now that we have created database migrations, let’s create seeder for the users table. Run the following command to create a threads table seeder.
+
+php artisan make:seeder UsersTableSeeder
+Now, replace the contents of the run method with the contents present below.
+
+
+public function run()
+{
+    factory(App\User::class, 10)->create();
+}
+Let’s create a seeder for the threads table. Run the following command to create a threads table seeder.
+
+php artisan make:seeder ThreadsTableSeeder
+We do not have a factory for the threads table. You can create one if you want. But let’s hardcode some of the data. Copy the contents below to your ThreadsTableSeeder.php file.
+
+
+<?php
+ 
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+ 
+class ThreadsTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $threads = [
+            [
+                'user_id' => 1,
+                'channel_id' => 1,
+                'title' => 'A random sentence',
+                'body' => 'Some lorem ipsum'
+            ],
+            [
+                'user_id' => 1,
+                'channel_id' => 2,
+                'title' => 'A random sentence',
+                'body' => 'Some lorem ipsum'
+            ],
+        ];
+ 
+        foreach ($threads as $thread)
+            DB::table('threads')->insert($thread);
+    }
+}
+Let’s create a Channels Table seeder by running the command below.
+
+php artisan make:seeder ChannelsTableSeeder
+Now, copy the contents present below to the ChannelsTableSeeder.php file.
+
+
+
+<?php
+ 
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+ 
+class ChannelsTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        $channels = [
+            [
+                'name' => 'php',
+                'slug' => 'php'
+            ],
+            [
+                'name' => 'laravel',
+                'slug' => 'laravel'
+            ],
+        ];
+ 
+        foreach ($channels as $channel)
+            DB::table('channels')->insert($channel);
+    }
+}
+Now, go to the DatabaseSeeder.php file located in database/seeds directory and replace the run function with the code present below.
+
+
+public function run()
+{
+     $this->call(UsersTableSeeder::class);
+     $this->call(ThreadsTableSeeder::class);
+     $this->call(ChannelsTableSeeder::class);
+}
+Now, that our database migrations and seeder are created. Run the command below to seed the database.
+
+php artisan db:seed
+You can also add the --class flag to the above command followed by the name of the class like ThreadsTableSeeder to only seed the threads class.
+
+Hopefully, now you have a good understanding of how to work with database seeders.

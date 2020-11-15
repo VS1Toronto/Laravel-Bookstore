@@ -1,0 +1,278 @@
+Learn To Use Model Factories In Laravel
+
+
+LAST UPDATED JUN 15, 2018
+
+
+Laravel has a feature called model factories that allows you to build fake data for your models. It is very useful for testing and seeding fake data into your database to see your code in action before any real user data comes in. Let’s go through this feature and see how we can use it by building a Laravel application.
+
+Table of Contents	
+Starting
+Creating a new Model
+Setting up Database
+Setting up Migration
+Creating Database Seeds
+Creating Model Factories
+Testing with Factories
+Factory make vs create method
+Working with States
+Creating Model Factories Automatically
+Starting
+Let’s start by creating a new project named Factories. To do this, run the following command:
+
+laravel new Factories
+This will create a new Laravel project within a folder named Factories.
+
+Creating a new Model
+Now, let’s create a Post model and a migration for it. To do this run the following command from the project root directory:
+
+php artisan make:model Post -m
+This command will create a new Post model and because we added -m or --migration flag, it will create a migration for it as well. This command will create two files at app/Post.php and database/migrations/create_posts_table.php. Create posts table relationship with the user by opening app/User.php and defining the following relation:
+
+
+
+public function posts()
+{
+    return $this->hasMany(Post::class);
+}
+Setting up Database
+Now, go to your .env file and change credentials for your database. Since it is just a dummy project, I will go with SQLite. To use SQLite, set DB_CONNECTION to sqlite and remove all other DB_* lines from your .env. Your .env database part now look like this:
+
+1
+DB_CONNECTION=sqlite
+Now that you have set DB_CONNECTION to sqlite, create a file named database.sqlite in your database directory in the root of your application. Also, run the following command to configure your cache.
+
+php artisan config:cache
+Now let’s set up our migration.
+
+Setting up Migration
+Open your posts table migration file in database/migrations/create_posts_table.php and change the up method to the following:
+
+
+
+public function up()
+{
+    Schema::create('posts', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('user_id');
+        $table->string('title');
+        $table->text('description');
+        $table->timestamps();
+    });
+}
+In the create_posts_table.php migration, we are creating a user_id that will be a relationship to the users table, title for the post which is a string, and description which will contain the contents for the post.
+
+After you have set-up the migration, run the database migration from the artisan console:
+
+php artisan migrate
+Now that we have run the migration, let’s create some database seeds to create fake data for our project.
+
+Creating Database Seeds
+Database seeds are a way of creating fake data and adding it to your database. It helps you get fake data quickly than creating it manually. Let’s create a seed for users and posts table. To do this run both of the following commands one by one:
+
+php artisan make:seeder UsersTableSeeder
+php artisan make:seeder PostsTableSeeder
+Now that we have created seeds for users and posts table, they need some instructions. We have to create model factories for that.
+
+Creating Model Factories
+From Laravel 5.5, we create different files for the factories of each model. It is better than defining all factories inside a single file. If you are using earlier versions of Laravel, you have to define factories in database/factories/ModelFactory.php file. Since, we are using Laravel 5.5, open database/factories/UserFactory.php and you will see a factory for users table defined already.
+
+
+
+$factory->define(App\User::class, function (Faker $faker) {
+    return [
+        'name' => $faker->name,
+        'email' => $faker->unique()->safeEmail,
+        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'remember_token' => str_random(10),
+    ];
+});
+In the above code, we are defining a factory for App\User::class model and passing it as the first parameter. Then we have a callback function that defines the data and returns it in an array. Array keys are the name of the columns of the users table. We are using Faker which is a very useful library for creating fake data. Here’s a description of all the faker properties used.
+
+$faker->name: Creates a fake name like John Doe
+$faker->unique()->safeEmail: Create a unique email that uses example.org that is reserved for testing purposes. So, even if it generates a real email, it is not an issue.
+For password, we are defining an encrypted version of the word secret. It will create the same password for all the users which will be secret (encrypted). If you want the password for the users to be random, you could instead use something like this:
+1
+'password' => password_hash(str_random(10)),
+It will create a random string of 10 characters and then encrypt it safely using PHP function password_hash.
+
+Now let’s create a new factory for our posts table. To do this: run the following command:
+
+php artisan make:factory PostFactory
+It will create a new factory at database/factories/PostFactory.php. Here are the completed contents of the PostFactory.php file
+
+
+
+<?php
+ 
+use Faker\Generator as Faker;
+ 
+$factory->define(App\Post::class, function (Faker $faker) {
+    return [
+        'title' => $faker->sentence(5),
+        'description' => $faker->text(),
+        'user_id' => factory('App\User')->create()->id,
+    ];
+});
+Here’s a description of all of the faker properties used:
+
+$faker->sentence(5): Creates a dummy sentence with five words
+$faker->test(): Creates some dummy text
+factory(‘App\User’)->create()->id: Creates a new user via User factory and get its id
+Now that we have created our factories, let’s complete our seed classes. Open the UsersTableSeeder and modify its run method to the following:
+
+
+
+public function run()
+{
+    factory('App\User', 10)->create();
+}
+factory('App\User', 10) will build a User class through its factory and it will create it by saving it into the database. Since we want 10 users in our database, it will do it 10 times.
+
+Now open PostsTableSeeder and modify its run method to the following as well:
+
+
+
+public function run()
+{
+    factory('App\Post', 10)->create();
+}
+It will create 10 posts in the database as well as 10 users because in Post factory we create a new user through its User Factory and get its id.
+
+Now that we have created our table seeds, go to database/seeds/DatabaseSeeder.php file and modify its up method to the following:
+
+
+
+public function run()
+{
+    // Disable all mass assignment restrictions
+    Model::unguard();
+ 
+    $this->call(PostsTableSeeder::class);
+ 
+    // Re enable all mass assignment restrictions
+    Model::reguard();
+}
+Now that we have added PostsTableSeeder in our DatabaseSeeder.php , we can run it through the console. Since, we have already migrated our database, run the following command to seed your database:
+
+1
+php artisan db:seed
+Above command will run the run method on DatabaseSeeder class. Now our database will contain some fake data generated from model factories. PostsTableSeeder will create 10 users and 10 posts with some dummy title and description.
+
+You can also seed any Seeder class by passing the --class option. If you want to seed UsersTableSeeder you can run the following command. It’s just for information, we are not doing it in our project.
+
+1
+php artisan db:seed --class=UsersTableSeeder
+Testing with Factories
+Let’s see how we can use model factories for testing purposes. Create a new test for Posts by running the following command:
+
+php artisan make:test PostsTest
+It will create a new file at tests/Feature/PostsTest.php. Open this file and add a new method testPostsCreation. Here is the completed version of the file:
+
+
+
+<?php
+ 
+namespace Tests\Feature;
+ 
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
+ 
+class PostsTest extends TestCase
+{
+    use DatabaseTransactions;
+ 
+    public function testPostsCreation()
+    {
+        $title = 'Some subject!';
+        $description = 'Some description';
+        factory('App\Post')->create([
+            'title' => $title,
+            'description' => $description,
+        ]);
+ 
+        $this->assertDatabaseHas('posts', [
+            'title' => $title,
+            'description' => $description
+        ]);
+    }
+}
+In this test file, we are using DatabaseTransactions, so that we run each test wrapped in a transaction. Inside testPostsCreation we are creating a new Post model through its factory. In the create method we are passing an array with columns and its values which will override the stored data in the original model factory. So, it will create a post model with title and description set to our given values.
+
+For testing, we are using assertDatabaseHas method which returns true if the given column and its values are present in the given table. The first argument is the table name and the second argument is the column name and its values passed as an array.
+
+Factory make vs create method
+There are two methods that we normally use on the factory helper function. One is make and the other one is create. Create tries to store data in the database like we save an eloquent model. On the other hand, make creates the model and returns it with its properties defined through the factory. If we have not defined any amount for the factory, we could chain the save method with the make and it would work the same way as create.
+
+
+
+
+// Both of them works the same way
+factory('App\User')->make()->save();
+factory('App\User')->create();
+But if we define any amount in the factory like factory('App\User', 5)->make(), it returns a collection of User models after building. We can also iterate through the collection and save each of them using the each method.
+
+
+
+
+factory('App\User', 10)->make()->each(function($u) {
+    return $u->save();
+});
+Working with States
+You can also define factory states in Laravel. To do this let’s first adjust our migration for posts table. Add two new boolean columns is_featured and is_active. Here is the adjusted version of the up method in database/migrations/create_posts_table.php
+
+
+
+
+public function up()
+{
+    Schema::create('posts', function (Blueprint $table) {
+        $table->increments('id');
+        $table->integer('user_id');
+        $table->string('title');
+        $table->text('description');
+        $table->boolean('is_featured')->default(false);
+        $table->boolean('is_active')->default(false);
+        $table->timestamps();
+    });
+}
+Let’s say we want to define the ability to set is_featured and is_active to true. Define new states for is_active and is_featured in database/factories/PostFactory.php below the factory definition. Here is the code for states created:
+
+
+
+
+$factory->state(App\Post::class, 'active', function() {
+    return [
+        'is_active' => true,
+    ];
+});
+ 
+$factory->state(App\Post::class, 'featured', function() {
+    return [
+        'is_featured' => true,
+    ];
+});
+In the Factory state, the first parameter is the class of the model, second is the name of the state and third is a callback function which returns some column name and its value.
+
+With these states created, we can now call them like this:
+
+
+
+// Create a new Post
+factory('App\Post')->create();
+ 
+// Create a new active post
+factory('App\Post')->states('active')->create();
+ 
+// Create a new featured post
+factory('App\Post')->states('featured')->create();
+ 
+// Create a new active featured post
+factory('App\Post')->states('active', 'featured')->create();
+When we are using active state, it will set active to true. Same for the featured state. We can also use multiple states by passing them as arguments in states method.
+
+Creating Model Factories Automatically
+Laravel Test Factory Helper (Github) is a package created by Marcel Pociot that generates model factories automatically from your existing models and database migrations. After you have installed it and added the service provider in your config/app.php, it gives you a new artisan command for generating model factories.
+
+php artisan test-factory-helper:generate
+This command will then create factories and save them in your database/factories/ModelFactory.php file. File needs to be present because it will not create a new file. Output filename is configurable by using the--filename option. This command will only append and it will not modify any existing data in your factories file. You could use --reset option that will rewrite the file.

@@ -1,0 +1,37 @@
+Windows doesnt always show the complete file extension which can cause problems so to make it do so :
+
+
+STEP 1
+------
+
+
+Open     This PC     and select     View     from the top left four option choice
+
+
+STEP 2
+------
+
+
+Next click     options     which is a drop down at the far right of the bar
+
+Then choose     Change Folder And Search Options
+
+
+STEP 3
+------
+
+
+There are three tabs     General     View     Search
+
+Choose     View
+
+
+STEP 4
+------
+
+
+There is an option    Hide Extension For Known File Types
+
+This option if checked wil be hiding the complete file extension and may cause problems
+
+Uncheck this option to ensure Windows shows the complete file extension     

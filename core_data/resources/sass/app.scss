@@ -1,0 +1,23 @@
+
+// Fonts
+//
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+//
+@import 'variables';
+
+// Bootstrap
+//
+@import '~bootstrap/scss/bootstrap';
+
+//  Here we import the custom file where CSS changes can be made
+//  !!!     Yout dont need the     _     Laravel knows automatically     !!!
+//  then we have to type     npm run dev     and press enter in Gitbash
+//
+@import 'custom'; 
+
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}

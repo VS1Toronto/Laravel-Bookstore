@@ -1,0 +1,85 @@
+We need to create a virtual host that points to location :
+
+http://localhost/sampleapp/public/index.php
+
+
+
+STEP 1
+
+To do this go to C:/xampp/apache/conf/extra
+
+
+Open the file     httpd-vhosts.conf
+
+
+Add these lines below the exising code, these are virtual host entries :
+
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs"
+    ServerName localhost
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs/sampleapp/public"
+    ServerName sampleapp.dev
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs/basicwebsite/public"
+    ServerName basicwebsite.dev
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs/todolist/public"
+    ServerName todolist.dev
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs/larabiz/public"
+    ServerName larabiz.dev
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot "C:/xampp/htdocs/photoshow/public"
+    ServerName photoshow.dev
+</VirtualHost>
+
+
+
+STEP 2
+
+Next open file C:/Windows/System32/drivers/etc
+
+
+Ensure the vieing of     all files     in the lower right hand corner
+is selected
+
+
+
+Open file hosts in administrator with Notepad++
+
+
+Add these lines below the existing code :
+
+
+# This     127.0.0.1 localhost     is for XAMPP
+#
+# Another addition     127.0.0.1 lsapp.dev     is for  the     laravel_traversy     application
+#
+# Another addition     127.0.0.1 sampleapp.dev     is for  the     Laravel Traversy 10     applications
+#
+# Another addition     127.0.0.1 basicwebsite.dev     is for  the     Laravel Traversy 10     applications
+#
+# Another addition     127.0.0.1 todolist.dev     is for  the     Laravel Traversy 10     applications
+#
+# Another addition     127.0.0.1 larabiz.dev     is for  the     Laravel Traversy 10     applications
+#
+# Another addition     127.0.0.1 photoshow.dev     is for  the     Laravel Traversy 10     applications
+#
+127.0.0.1 localhost
+127.0.0.1 sampleapp.dev
+127.0.0.1 basicwebsite.dev
+127.0.0.1 todolist.dev
+127.0.0.1 larabiz.dev
+127.0.0.1 photoshow.dev

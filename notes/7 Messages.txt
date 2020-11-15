@@ -1,0 +1,51 @@
+To include a messages file where session status and warning messages will be displayed from :
+
+
+STEP 1
+------
+
+
+create the directory folder :
+
+
+resources/views/includes
+
+
+STEP 2
+------
+
+
+Within the folder     includes     create the file :
+
+messages.blade.php
+
+
+STEP 3
+------
+
+
+Within     messages.blade.php     add the following code and save the file :
+
+
+@if(count($errors) > 0)
+    @foreach($errors->all() as $error)
+        <div class="alert alert-danger">
+            {{$error}}
+        </div>
+    @endforeach
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success">
+        {{session('success')}}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{session('error')}}
+    </div>
+@endif
+
+
+

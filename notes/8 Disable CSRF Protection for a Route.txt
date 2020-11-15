@@ -1,0 +1,52 @@
+Normally when you submit a form through the Laravel application the form includes a CSRF token.
+
+When using POSTMAN to work on simply a backend application we are not using forms hence not sending CSRF tokens with requests.
+
+This results in an error.
+
+To illiminate this error we must inform Laravel which routes do not need CSRF token protection.
+
+To do this go to the directory location in the Laravel application :
+
+
+app/middleware/VerifyCsrfToken.php
+
+
+Within this file find the code :
+
+
+
+class VerifyCsrfToken extends Middleware
+{
+    /**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array
+     */
+    protected $except = [
+
+    ];
+}
+
+
+
+Change it to :
+
+
+
+class VerifyCsrfToken extends Middleware
+{
+    /**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array
+     */
+    protected $except = [
+        
+        'api/*'
+    ];
+}
+
+
+
+Now any route that starts with     api     will be allowed to be used without causing an error

@@ -1,0 +1,12 @@
+To create a sim link between the     storage/app/public     folder and the     public     folder :
+
+In Gitbash type the command :
+
+
+php artisan storage:link
+
+
+You will get the message confirming it has worked :
+
+
+The [public/storage] directory has been linked.

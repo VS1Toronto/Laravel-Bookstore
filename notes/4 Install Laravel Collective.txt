@@ -1,0 +1,77 @@
+To install Laravel Collective which is a package to make html and forms look good go to url :
+
+
+STEP 1
+------
+
+
+https://laravelcollective.com/docs/master/html
+
+
+STEP 2
+------
+
+
+Find the line :
+
+	composer require "laravelcollective/html":"^5.4.0"
+
+
+Open Windows Studio Code
+
+Open Gitbash Terminal     ctrl @
+
+
+input     composer require "laravelcollective/html":"^5.4.0"    and press enter.
+
+
+STEP 3
+------
+
+
+Input provider :
+
+
+Find the line :
+
+	Collective\Html\HtmlServiceProvider::class,
+
+
+Next within the Laravel application open location :
+
+config\app.php
+
+
+Then input the line     Collective\Html\HtmlServiceProvider::class,     to the bottom of the providers array
+
+Then save it.
+
+
+STEP 4
+------
+
+
+Input the aliases :
+
+
+Find the lines :
+
+
+      'Form' => Collective\Html\FormFacade::class,
+      'Html' => Collective\Html\HtmlFacade::class,
+	  
+	  
+Next within the Laravel application open location :
+
+config\app.php
+
+
+Then input the lines
+
+      'Form' => Collective\Html\FormFacade::class,
+      'Html' => Collective\Html\HtmlFacade::class,
+
+				to the bottom of the aliases array
+
+Then save it.	  
+

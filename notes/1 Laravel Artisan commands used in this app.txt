@@ -1,0 +1,243 @@
+Laravel Artisan commands used in this app :
+
+Commands used in this project :
+
+
+
+//	To create an application using composer
+//
+//	Open a Gitbash terminal either itself or in Windows Studio Code using     View - Integrated Terminal     or alternatively     ctrl @
+//
+//	cd ../     to the localhost htdocs folder
+//
+//	cd C:
+//	cd xampp
+//	cd htdocs
+//
+$ composer create-project laravel/laravel core_data
+
+
+
+$ cd core_data
+
+
+
+//	To update composer
+//
+$ composer update
+
+
+
+//	Sometimes you need to run this command to regenerate a list of all classes needed to run the app 
+//
+$ composer dump-autoload -o
+
+
+
+//	To create a prefebricated login system
+//
+$ php artisan make:auth
+
+
+
+//	To view all available routes
+//
+$ php artisan route:list
+
+
+
+//	Install Node Package Manager
+//
+npm install
+
+
+
+//	To install a footer you need to install NPM first or Laravel wont listen to CSS changes in you custom file
+//
+	Create the file     	_custom.scss     at directory     resources/sass/_custom.scss
+
+	Link the file		Within     _custom.scss     out all your css alterations and remember you must put     @import 'custom';     in     resources/sass/app.scss
+	!!!     Yout dont need the     _     Laravel knows automatically     !!!
+
+//	Any code changes wont take effect till you run in Gitbash     npm run dev     you must also then in the Laravel application clear the cache by pressing     ctrl f5
+//
+//
+//	Footer CSS to go in     resources/sass/_custom.scss
+//	
+//	#footer{
+//    		position:absolute;
+//    		width:100%;
+//    		bottom:0;
+//    		margin-top:30px;
+//    		padding:10px;
+//    		color:#fff;
+//    		background:#B2B2B2;
+//	}
+//
+//
+//
+//	Footer Code to go in layouts.app.blade.php outside any containers just above the closing </body> and </html> tags
+//
+//	<footer id="footer" class="text-center">
+//		<p>Copyright 2018 &copy; Acme</p>
+//	</footer>
+//
+//
+//	</body>
+//	</html>	
+//
+
+
+
+//	Compile changes to SASS down to CSS files which instead of installing Bootstrap
+//
+npm run dev
+
+
+
+//	Constantly compile changes to SASS files which contain Bootstrap Classes
+//
+npm run watch
+
+
+
+//	Install Bootstrap
+//
+$ npm install bootstrap
+
+
+
+php artisan serve
+
+
+
+//	To Access application in localhost
+//
+http://localhost/book_application/core_data/public
+
+
+
+$ php artisan make:controller BookController --resource
+
+
+
+php artisan make: model Book -m
+
+
+
+php artisan make:seeder BookTableSeeder
+
+
+
+php artisan migrate --seed
+
+
+
+//	To migrate tables to database with migrations     -     remember to input data into the .env files
+//
+$ php artisan migrate
+
+
+
+//	To migrate tables to database with migrations completely new replacing the old ones     -     remember to input data into the .env files
+//
+$ php artisan migrate:fresh
+
+
+
+//	To migrate tables to database with migrations completely new replacing the old ones and use the seeder to populate the database     -     remember to input data into the .env files
+//
+php artisan migrate:fresh --seed
+
+
+
+//	To make a new provider - in this case FormServiceProvider which is made in the app/providers folder
+//
+//	Remember you must also add to the providers array at     config/app     this line     App\Providers\FormServiceProvider::class,	    in the     Application Service Providers     section
+//
+$ php artisan make:provider FormServiceProvider
+
+
+
+
+
+
+
+//	To make a model called Book with its migration file
+//
+$ php artisan make:model Book -m
+
+
+//	To make a resource controller called     BookController
+//
+$ php artisan make:controller BookController --resource
+
+
+
+//	To make a seeder called BookTableSeeder
+//
+$ php artisan make:seeder BookTableSeeder
+
+
+//	To run seeder when it has been completed
+//
+$ php artisan migrate --seed
+
+
+//	To run seeder again and replace the seeded data in the database
+//
+$ php artisan migrate:fresh --seed
+
+
+
+
+
+
+
+---------------------------------------------------
+To make the application capable of uploading images
+---------------------------------------------------
+
+
+//	To link the storage file to the public storage file for uploading images
+//
+$ php artisan storage:link
+
+
+
+//	To make new migration for adding cover image to book
+//
+//	Wasnt used as I just put the cover_image field in the Book Model
+//
+$ php artisan make:migration add_cover_image_to_books
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	To install image uploading with composer
+//
+$ composer require intervention/image
+
+
+
+//	To make an ImageFormRequest
+//
+$ php artisan make:request ImageFormRequest
+
+
+
+//	To make an ImagesController
+//
+$ php artisan make:controller ImagesController
+
+
+
